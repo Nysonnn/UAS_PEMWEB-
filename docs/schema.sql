@@ -1,0 +1,60 @@
+CREATE DATABASE IF NOT EXISTS e_inventory CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci;
+USE e_inventory;
+
+CREATE TABLE users (
+  id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+  name VARCHAR(120) NOT NULL,
+  email VARCHAR(160) NOT NULL UNIQUE,
+  password_hash VARCHAR(255) NOT NULL,
+  role VARCHAR(30) NOT NULL DEFAULT 'admin',
+  created_at DATETIME NULL,
+  updated_at DATETIME NULL
+);
+
+CREATE TABLE categories (
+  id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+  name VARCHAR(120) NOT NULL,
+  description TEXT NULL,
+  created_at DATETIME NULL,
+  updated_at DATETIME NULL
+);
+
+CREATE TABLE suppliers (
+  id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+  name VARCHAR(140) NOT NULL,
+  phone VARCHAR(40) NULL,
+  address TEXT NULL,
+  created_at DATETIME NULL,
+  updated_at DATETIME NULL
+);
+
+CREATE TABLE items (
+  id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+  category_id INT UNSIGNED NOT NULL,
+  supplier_id INT UNSIGNED NOT NULL,
+  sku VARCHAR(40) NOT NULL UNIQUE,
+  name VARCHAR(160) NOT NULL,
+  unit VARCHAR(30) NOT NULL DEFAULT 'pcs',
+  stock INT NOT NULL DEFAULT 0,
+  minimum_stock INT NOT NULL DEFAULT 0,
+  price DECIMAL(12,2) NOT NULL DEFAULT 0,
+  created_at DATETIME NULL,
+  updated_at DATETIME NULL,
+  CONSTRAINT fk_items_category FOREIGN KEY (category_id) REFERENCES categories(id)
+    ON UPDATE CASCADE ON DELETE RESTRICT,
+  CONSTRAINT fk_items_supplier FOREIGN KEY (supplier_id) REFERENCES suppliers(id)
+    ON UPDATE CASCADE ON DELETE RESTRICT
+);
+
+CREATE TABLE stock_movements (
+  id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+  item_id INT UNSIGNED NOT NULL,
+  type ENUM('in', 'out') NOT NULL,
+  quantity INT NOT NULL,
+  notes TEXT NULL,
+  movement_date DATE NOT NULL,
+  created_at DATETIME NULL,
+  updated_at DATETIME NULL,
+  CONSTRAINT fk_stock_movements_item FOREIGN KEY (item_id) REFERENCES items(id)
+    ON UPDATE CASCADE ON DELETE CASCADE
+);
