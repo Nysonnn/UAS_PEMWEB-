@@ -6,5 +6,8 @@ backend-api/writable/session/
 backend-api/writable/uploads/
 backend-api/.env
 output/
+Pengumpulan_UAS_Web2_*.pdf
+docs/pengumpulan-uas-web2.md
+tools/generate_pengumpulan_pdf.py
 .DS_Store
 Thumbs.db
